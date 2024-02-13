@@ -4,14 +4,51 @@ import { Link, useNavigate } from "react-router-dom";
 
 export default function SignIn() {
   const [formData, setFormData] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    e.preventDefault();
-    console.log(e.target.value);
+    //e.preventDefault();
+    setFormData({ ...formData, [e.target.id]: e.target.value.trim() });
   };
+  // console.log(formData);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
-    //TODO
+
+    if (!formData.password || !formData.email) {
+      return setErrorMessage("Please fill all the fields");
+    }
+    //SUBMISSION
+
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      const res = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await res.json();
+      //console.log(data);
+
+      if (!data) {
+        return setErrorMessage(data.message);
+      }
+
+      setLoading(false);
+
+      if (res.ok) {
+        navigate("/");
+      }
+    } catch (error) {
+      setErrorMessage(error.message);
+      setLoading(false);
+    }
   };
   return (
     <div className="min-h-screen mt-20">
@@ -51,8 +88,19 @@ export default function SignIn() {
                 onChange={handleChange}
               />
             </div>
-            <Button gradientDuoTone="purpleToPink" type="submit">
-              Sign In
+            <Button
+              gradientDuoTone="purpleToPink"
+              type="submit"
+              disabled={loading}
+            >
+              {loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span className="pl-3">Loading ...</span>
+                </>
+              ) : (
+                "Sign In"
+              )}
             </Button>
           </form>
           <div className="flex gap-2 text-sm mt-5">
@@ -61,11 +109,11 @@ export default function SignIn() {
               Sign Up
             </Link>
           </div>
-          {/*{errorMessage && (
-            <Alert className='mt-5' color='failure'>
+          {errorMessage && (
+            <Alert className="mt-5" color="failure">
               {errorMessage}
             </Alert>
-          )}*/}
+          )}
         </div>
       </div>
     </div>
