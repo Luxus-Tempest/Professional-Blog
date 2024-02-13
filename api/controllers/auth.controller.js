@@ -29,5 +29,6 @@ export const signUp = async (req, res, next) => {
   } catch (error) {
     //res.status(500).json({ message: "This user is already signed up" });
     next(error);
+    //next(errorHandler(400, "This user is already signed up"));
   }
 };
