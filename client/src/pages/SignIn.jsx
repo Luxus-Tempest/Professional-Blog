@@ -7,7 +7,7 @@ export default function SignIn() {
 
   const handleChange = (e) => {
     e.preventDefault();
-    console.log(e.target.value)
+    console.log(e.target.value);
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
