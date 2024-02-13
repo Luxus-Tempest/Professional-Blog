@@ -5,7 +5,10 @@ import { Link, useNavigate } from "react-router-dom";
 export default function SignIn() {
   const [formData, setFormData] = useState({});
 
-  const handleChange = (e) => {};
+  const handleChange = (e) => {
+    e.preventDefault();
+    console.log(e.target.value)
+  };
   const handleSubmit = async (e) => {
     e.preventDefault();
     //TODO
